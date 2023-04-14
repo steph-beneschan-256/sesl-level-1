@@ -7,8 +7,3 @@ https://github.com/facebook/create-react-app#readme.
 https://www.geoapify.com/reverse-geocoding-api
 * Click data for different cities is stored using a Firebase Realtime Database, as described here:
 https://firebase.google.com/docs/database
-
-## Notes
-* The application is currently unable to distinguish between different cities with the same name (for instance, Paris, France and Paris, Texas are treated as being the same city)
-* The application's integration with Firebase and Geoapify relies on data in the src/api-keys.json file. For your convenience, 
-* 
