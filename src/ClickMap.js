@@ -14,12 +14,10 @@ export default function ClickMap(){
         // Read map data from database
         get(ref(database)).then((snapshot) => {
             if(snapshot.exists()) {
-                console.log(snapshot);
-                const c = snapshot.val();
+                const c = snapshot.val()["clicks_by_city"];
 
                 // Render data table
                 setDataTableRows(Object.entries(c).map(([city, cityData]) => {
-                    console.log(`${city}: ${cityData["clicks"]} clicks`);
                     return(
                         <tr>
                             <td>{city}</td>
@@ -35,7 +33,7 @@ export default function ClickMap(){
                 setMapDataLoaded(true);
             }
             else {
-                console.log("Could not retrieve map data");
+                console.log("Could not retrieve world click data");
             }
         })
 
@@ -46,23 +44,29 @@ export default function ClickMap(){
             {mapDataLoaded ? (
                 <div>
                     <table>
-                        <tr>
-                            <th>City</th>
-                            <th>Number of Clicks</th>
-                        </tr>
-                        {dataTableRows}
+                        <thead>
+                            <tr>
+                                <th>City</th>
+                                <th>Number of Clicks</th>
+                            </tr>
+                        </thead>
+                        {dataTableRows.length > 0 && (
+                            <tbody>
+                                {dataTableRows}
+                            </tbody>
+                        )}
                     </table>
                     <div>
-                        Map last updated at {mapTimeStamp}
+                        World click data last updated at {mapTimeStamp}
                     </div>
                     <button onClick={getMapData}>
-                    Update map data
+                    Update world click data
                     </button>
                 </div>
                 )
             : (
                 <button onClick={getMapData}>
-                    Retrieve map data
+                    Retrieve world click data
                 </button>
             )
             }

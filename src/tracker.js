@@ -15,6 +15,9 @@ export default function ClickTracker() {
     const [clicksAtLastSync, setClicksAtLastSync] = useState(0); // The number of clicks during this session, when the database was last updated
     const [updatingDB, setUpdatingDB] = useState(false); // Whether the database is currently being updated
 
+    // Number of clicks that still need to be saved to the database
+    const [unsavedClicks, setUnsavedClicks] = useState(0);
+
     function loadData() {
         const savedClickCount = JSON.parse(sessionStorage.getItem("session_clicks"));
         if(savedClickCount)
@@ -37,48 +40,47 @@ export default function ClickTracker() {
 
     function mainButtonClicked() {
         /*
-        Saving should occur as soon as the value is updated. However,
-        component states do not update immediately. To fix this, the
-        new session click total is manually calculated and saved to
-        the session storage.
+        Saving should occur as soon as the value is updated, so I elected to use an event handler
+        instead of an effect hook.
         */
-        const newSessionClicks = sessionClicks + 1;
-        setSessionClicks(newSessionClicks);
+        const newSessionClicks = sessionClicks + 1; // Since component states do not update immediately, the new value is calculated ad hoc
+        setSessionClicks(n => n + 1);
+        setUnsavedClicks(n => n + 1);
         // Ensure that session storage is updated immediately
         sessionStorage.setItem("session_clicks", JSON.stringify(newSessionClicks));
     }
 
     /*
-    Ensure that the database is not updated until after component state values have been updated 
-    Synchronization with the database probably does not need to be immediate, so an effect hook
-    is used here
+    Whenever there are unsaved clicks (i.e. clicks from the user that have not yet been
+    saved to the database), update the database appropriately.
+    I decided that an effect hook was necessary here to ensure that the database always
+    reflects the correct data.
+    
+    Usefully, the hook should also automatically trigger when the user enables location
+    permissions (which modifies the userCity variable).
     */
     useEffect(() => {
-        if(userCityLoaded && !updatingDB) {
-            setUpdatingDB(true); // prevent more than one update per render
-            const clicksToAdd = sessionClicks - clicksAtLastSync;
+        if((unsavedClicks > 0) && (userCity)) {
+            setUnsavedClicks(0);
             const locationRef = ref(database, "clicks_by_city");
             runTransaction(locationRef, (locData) => {
                 if(locData) {
                     if(locData[userCity] && locData[userCity]["clicks"])
-                        locData[userCity]["clicks"] = JSON.parse(locData[userCity]["clicks"]) + clicksToAdd;
+                        locData[userCity]["clicks"] = JSON.parse(locData[userCity]["clicks"]) + unsavedClicks;
                     else
-                        locData[userCity] = {"clicks": clicksToAdd};
+                        locData[userCity] = {"clicks": unsavedClicks};
                 }
                 else
-                    locData = {"clicks_by_city": {cityName:{"clicks":clicksToAdd}}};
+                    locData = {"clicks_by_city": {cityName:{"clicks":unsavedClicks}}};
                 return locData;
             }).then(() => {
-                setClicksAtLastSync(sessionClicks);
-                console.log("Data saved");
-                setUpdatingDB(false);
+            
             }).catch((err) => {
                 console.log(err);
-                setUpdatingDB(false);
             });
-        };
+        }
 
-    }, [userCityLoaded, sessionClicks, userCity, clicksAtLastSync, updatingDB]);
+    }, [unsavedClicks, userCity])
 
     // Load session data only once
     if(!dataLoaded)
