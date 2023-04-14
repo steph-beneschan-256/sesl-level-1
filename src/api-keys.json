@@ -1,0 +1,15 @@
+{
+    "firebase": {
+        "apiKey": "AIzaSyCSU9Djz33SAFTR3TzyAl1VchOr6T4F61Y",
+        "authDomain": "sesl1-sbeneschan.firebaseapp.com",
+        "databaseURL": "https://sesl1-sbeneschan-default-rtdb.firebaseio.com",
+        "projectId": "sesl1-sbeneschan",
+        "storageBucket": "sesl1-sbeneschan.appspot.com",
+        "messagingSenderId": "944205290529",
+        "appId": "1:944205290529:web:83acfc767583e712299760"
+    },
+
+    "geoapify": {
+        "apiKey": "f4ccd24c5ec945d192974e408d9f10a5"
+    }
+}
