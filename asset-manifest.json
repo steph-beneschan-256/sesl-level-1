@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/sesl-level-1/static/css/main.6d568063.css",
+    "main.js": "/sesl-level-1/static/js/main.e05a8b0f.js",
+    "static/js/787.ed2d7464.chunk.js": "/sesl-level-1/static/js/787.ed2d7464.chunk.js",
+    "index.html": "/sesl-level-1/index.html",
+    "main.6d568063.css.map": "/sesl-level-1/static/css/main.6d568063.css.map",
+    "main.e05a8b0f.js.map": "/sesl-level-1/static/js/main.e05a8b0f.js.map",
+    "787.ed2d7464.chunk.js.map": "/sesl-level-1/static/js/787.ed2d7464.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6d568063.css",
+    "static/js/main.e05a8b0f.js"
+  ]
+}
